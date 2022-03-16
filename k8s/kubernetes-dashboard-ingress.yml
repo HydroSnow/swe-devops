@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: dashboard.swe-devops-d2.trupin.dev
+    http:
+      paths:
+      - backend:
+          service:
+            name: kubernetes-dashboard
+            port:
+              number: 443
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - swe-devops-d2.trupin.dev
+    - dashboard.swe-devops-d2.trupin.dev
+    - gitlab.swe-devops-d2.trupin.dev
+    secretName: swe-devops-tls
+status:
+  loadBalancer:
+    ingress:
+    - ip: 46.101.216.38
